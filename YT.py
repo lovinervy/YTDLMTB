@@ -88,7 +88,7 @@ class youtube:
     def collect_files(self, video, audio):
 
         if system() == "Windows":
-            program = path.abspath(r"Programs\ffmpeg")
+            program = path.abspath(r"ffmpeg")
             save_path = video.replace("\\video\\", '\\downloads\\')
         else:
             program = "ffmpeg"

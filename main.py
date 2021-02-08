@@ -46,23 +46,26 @@ def queryParser(query):
     if cmds[0] == 'yt':
         if cmds[1] == 'dl':
             try:
-                bot.send_message(chat_id, 'Please wait, we are geting data from YouTube')
+                bot.send_message(chat_id, 'Пожайлуста подождите, мы получаем данные с YouTube')
+                bot.send_message(chat_id, 'Настоятельно не рекомендуется производить, какие либо' +\
+                    ' оперции во избежании просадки производительности системы')
                 yt = YT.youtube(cmds[2])
-                bot.send_message(chat_id, 'Download the Video track')
+                bot.send_message(chat_id, 'Скачиваем Видео дорожку')
                 video = yt.download_content(int(cmds[3]), dl_path='video')
                 audio = yt.audio()
-                bot.send_message(chat_id, 'Download the Audio track')
+                bot.send_message(chat_id, 'Скачиваем Аудио дорожку')
                 audio = yt.download_content(audio[0]['itag'], dl_path='audio')
-                bot.send_message(chat_id, 'Collect Video and Audio track')
+                bot.send_message(chat_id, 'Склеиваем Аудио и Видео дорожку')
+                bot.send_message(chat_id, 'Процесс не быстрый, пожалуйста подождите несколько минут')
                 save_file = yt.collect_files(video, audio)
                 os.remove(video)
                 os.remove(audio)
                 video_file = open(save_file, 'rb')
-                bot.send_message(chat_id, "Uploading video, please wait and don't push any button")
+                bot.send_message(chat_id, "Идёт загрузка видео в чат")
                 bot.send_chat_action(chat_id, 'upload_video', timeout=True)
                 bot.send_video(chat_id, video_file)
             except:
-                bot.send_message(chat_id, 'Error disconected server, im sorry...')
+                bot.send_message(chat_id, 'Ошибка, что-то пошло не так...')
             finally:
                 video_file.close()
                 os.remove(save_file)

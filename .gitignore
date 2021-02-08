@@ -1,0 +1,12 @@
+#Paths
+.vscode/
+env/
+__pycache__/
+test/
+video/
+audio/
+downloads/
+
+#files
+config.py
+ffmpeg.exe
