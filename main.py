@@ -8,6 +8,11 @@ import Buttons
 bot = TeleBot(telegram_token)
 
 
+def send_message():
+    msg = Msg.send_message
+    chat_id = Msg.id
+    bot.send_message(chat_id, msg)
+
 class User:
     def __init__(self):
         self.data = {}
@@ -16,12 +21,12 @@ class User:
         self.data[chat_id] = {}
 
 
-
 @bot.message_handler(commands = ['help'])
 def helpMessage(msg):
     chat_id = msg.chat.id
-    message = 'Help commands'
-    bot.send_message(chat_id, message)
+    with open('msgs/help.txt', 'r', encoding='utf-8') as f:
+        message = f.read()
+    bot.send_message(chat_id, message, parse_mode='markdown')
 
 
 @bot.message_handler(func = lambda msg: msg.content_type == 'text')
@@ -31,12 +36,17 @@ def msgParser(msg):
     if YT.isTrueLink(mes):
         url = mes.split()[0]
         yt = YT.youtube(url)
-        content = yt.video()
         text = yt.title()
-        markup = Buttons.parseVideo(url,content)
-        bot.send_message(chat_id, f'[{text}]({url})',parse_mode='markdown',reply_markup=markup)
+        if not yt.isStream():
+            content = yt.video()
+            markup = Buttons.parseVideo(url,content)
+            bot.send_message(chat_id, f'[{text}]({url})', parse_mode='markdown', reply_markup=markup)
+        else:
+            url = yt.getStreamLink()
+            bot.send_message(chat_id, f'[{text}]({url})', parse_mode='markdown')
     else:
         pass
+
 
 @bot.callback_query_handler(lambda query: True)
 def queryParser(query):
@@ -69,7 +79,6 @@ def queryParser(query):
             finally:
                 video_file.close()
                 os.remove(save_file)
-
 
 
 user = User()

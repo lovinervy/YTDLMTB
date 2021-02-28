@@ -58,6 +58,20 @@ class youtube:
         return audios
 
 
+    def isStream(self)->bool:
+        if self.yt.player_response.get("streamingData", {}).get("hlsManifestUrl", None):
+            return True
+        else:
+            return False
+
+
+
+    def getStreamLink(self)->str:
+        try:
+            return self.yt.player_response.get("streamingData").get("hlsManifestUrl", None)
+        except:
+            return 
+
     def progress_func(self, chunk, file_handle, bytes_remaining):
         size = self.content_size
         progress = 100 * (1 - bytes_remaining/size)
