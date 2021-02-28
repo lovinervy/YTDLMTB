@@ -3,6 +3,7 @@ from telebot import TeleBot
 from config import telegram_token
 import YT
 import Buttons
+import yt_stream
 
 
 bot = TeleBot(telegram_token)
@@ -37,13 +38,12 @@ def msgParser(msg):
         url = mes.split()[0]
         yt = YT.youtube(url)
         text = yt.title()
+        content = yt.video()
         if not yt.isStream():
-            content = yt.video()
             markup = Buttons.parseVideo(url,content)
-            bot.send_message(chat_id, f'[{text}]({url})', parse_mode='markdown', reply_markup=markup)
         else:
-            url = yt.getStreamLink()
-            bot.send_message(chat_id, f'[{text}]({url})', parse_mode='markdown')
+            markup = Buttons.parseStream(url, content)
+        bot.send_message(chat_id, f'[{text}]({url})', parse_mode='markdown', reply_markup=markup)
     else:
         pass
 
@@ -79,6 +79,22 @@ def queryParser(query):
             finally:
                 video_file.close()
                 os.remove(save_file)
+        elif cmds[1] == 'stream':
+            yt = YT.youtube(cmds[2])
+            if yt.isStream():
+                m3u8_url = yt.getStreamLink()
+                title = yt.title()
+                m3u8 = yt_stream.get(m3u8_url, title, int(cmds[3]))
+                m3u8_file = open(m3u8, 'r')
+                bot.send_document(chat_id, m3u8_file)
+                m3u8_file.close()
+                os.remove(m3u8)
+            else:
+                bot.send_message(chat_id, 'Похоже стрим по данной ссылке завершился, но вы можете скачать запись стрима')
+                content = yt.video()
+                markup = Buttons.parseVideo(cmds[2], content)
+                bot.send_message(chat_id, f'[{yt.title()}]({cmds[2]})', parse_mode='markdown', reply_markup=markup)
+
 
 
 user = User()

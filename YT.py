@@ -24,7 +24,7 @@ class youtube:
         self.url = url
 
     def title(self):
-        return self.yt.title
+        return self._remove_symbol(self.yt.title)
     
     def progress(self):
         if self.result:
@@ -113,6 +113,16 @@ class youtube:
         
         subprocess.check_call(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         return save_path
+
+    @staticmethod
+    def _remove_symbol(name):
+        """
+        Удаляет запрещенные символы с названии
+        """
+        replace_symbol = ['\\','/',':','*','?','"','<','>','|']
+        for i in replace_symbol:
+            name = name.replace(i, '')
+        return name
 
 
 if __name__ == "__main__":
