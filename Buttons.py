@@ -1,4 +1,7 @@
+from typing import List
 from telebot import types
+
+from youtube import VideoMetadata
 
 
 
@@ -8,29 +11,14 @@ def inlineButtons(data:list):
     return btns
 
 
-def parseVideo(link, videos:list):
+def parseVideo(link, videos:List[VideoMetadata]):
     btns = []
     res = []
     for video in videos:
-        if video['itag'] > 100 and video['res'] not in res:
-            text = f"{video['res']} {video['fps']}fps"
-            data = f"yt dl {link} {video['itag']}"
+        if video.itag > 100 and video.resolution not in res:
+            text = f"{video.resolution} {video.fps}fps"
+            data = f"yt dl {link} {video.itag}"
             tmp = types.InlineKeyboardButton(text, callback_data=data)
-            res.append(video['res'])
+            res.append(video.resolution)
             btns.append(tmp)
     return inlineButtons(btns)
-
-
-def parseStream(link, videos: list):
-    btns = []
-    res = []
-    for video in videos:
-        if video['itag'] > 100 and video['res'] not in res:
-            text = f"{video['res']} {video['fps']}fps"
-            data = f"yt stream {link} {video['res'][:-1]}"
-            tmp = types.InlineKeyboardButton(text, callback_data=data)
-            res.append(video['res'])
-            btns.append(tmp)
-    return inlineButtons(btns)   
-    
-
