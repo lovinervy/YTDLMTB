@@ -42,7 +42,7 @@ python3 main.py
 
 #### Windows
 
-Скачать **[Python](https://www.python.org/downloads/) **
+Скачать **[Python](https://www.python.org/downloads/)**
 
 Во время установки Python поставить галочку на добавление в **PATH**
 
